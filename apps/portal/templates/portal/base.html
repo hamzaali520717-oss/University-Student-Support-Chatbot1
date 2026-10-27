@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block header %}
+<nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+    <a href="{% url 'portal:dashboard' %}" class="font-display text-2xl font-semibold tracking-tight text-brand-700">
+        Smart University
+    </a>
+    <button data-collapse-toggle="portal-nav" type="button" class="inline-flex items-center rounded-md p-2 text-brand-700 md:hidden" aria-controls="portal-nav" aria-expanded="false">
+        <span class="sr-only">Open menu</span>
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <div class="hidden w-full flex-col gap-4 md:flex md:w-auto md:flex-row md:items-center md:gap-8" id="portal-nav">
+        <ul class="mt-4 flex flex-col gap-6 md:mt-0 md:flex-row md:items-center">
+            <li><a href="{% url 'portal:dashboard' %}" class="nav-link">Dashboard</a></li>
+            <li><a href="{% url 'portal:enrollments' %}" class="nav-link">Enrollments</a></li>
+            <li><a href="{% url 'portal:attendance' %}" class="nav-link">Attendance</a></li>
+            <li><a href="{% url 'portal:semester-plan' %}" class="nav-link">Semester Plan</a></li>
+            <li><a href="{% url 'portal:fees' %}" class="nav-link">Fees</a></li>
+            <li><a href="{% url 'portal:announcements' %}" class="nav-link">Announcements</a></li>
+        </ul>
+        <div class="flex items-center gap-4">
+            <span class="font-body text-sm text-gray-600">{{ request.user.get_full_name|default:request.user.username }}</span>
+            <form method="post" action="{% url 'portal:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="nav-link">Log out</button>
+            </form>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    {% if messages %}
+    <ul class="mb-8 space-y-2">
+        {% for message in messages %}
+        <li class="rounded-md px-4 py-3 text-sm {% if message.tags == 'error' %}bg-red-50 text-red-700{% else %}bg-brand-50 text-brand-700{% endif %}">
+            {{ message }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% block portal_content %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block footer %}
+<div class="mx-auto max-w-7xl px-4 py-8 text-center text-xs text-brand-100 sm:px-6 lg:px-8">
+    &copy; {% now "Y" %} Smart University Student Portal.
+</div>
+{% endblock %}
+
+{% block assistant_widget %}{% endblock %}

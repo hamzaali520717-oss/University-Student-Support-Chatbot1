@@ -1,0 +1,31 @@
+{% extends "portal/base.html" %}
+
+{% block title %}Enrollments — Student Portal{% endblock %}
+
+{% block portal_content %}
+{% include "website/_list_header.html" with kicker="Student Portal" title="Enrollments" count=enrollments|length noun="Enrollment" %}
+
+{% if enrollments %}
+<ul class="mt-8 grid gap-x-10 gap-y-2 lg:grid-cols-2">
+    {% for enrollment in enrollments %}
+    {% include "portal/_row.html" with type="enrollment" item=enrollment %}
+    {% endfor %}
+</ul>
+{% else %}
+{% include "website/_empty_state.html" with message="You're not enrolled in any subjects yet." %}
+{% endif %}
+
+<div class="mt-16">
+    <p class="kicker">Available Subjects</p>
+    <h2 class="mt-3 font-display text-2xl font-semibold text-brand-700">Enroll in a subject</h2>
+    {% if available_subjects %}
+    <ul class="mt-6 grid gap-x-10 gap-y-2 lg:grid-cols-2">
+        {% for subject in available_subjects %}
+        {% include "portal/_row.html" with type="available_subject" item=subject %}
+        {% endfor %}
+    </ul>
+    {% else %}
+    {% include "website/_empty_state.html" with message="No more subjects available for your program right now." %}
+    {% endif %}
+</div>
+{% endblock %}

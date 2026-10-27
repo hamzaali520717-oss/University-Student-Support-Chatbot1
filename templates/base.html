@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart University Portal{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,900;1,400;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'dist/css/styles.css' %}">
+    <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
+    <script src="{% static 'vendor/flowbite.min.js' %}" defer></script>
+    <script src="{% static 'src/js/site.js' %}" defer></script>
+</head>
+<body class="font-body bg-white text-gray-900">
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200">
+        {% block header %}
+        <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+            <a href="{% url 'website:home' %}" class="font-display text-2xl font-semibold tracking-tight text-brand-700">
+                Smart University
+            </a>
+            <button data-collapse-toggle="primary-nav" type="button" class="inline-flex items-center rounded-md p-2 text-brand-700 md:hidden" aria-controls="primary-nav" aria-expanded="false">
+                <span class="sr-only">Open main menu</span>
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="hidden w-full md:flex md:w-auto" id="primary-nav">
+                <ul class="mt-4 flex flex-col gap-6 md:mt-0 md:flex-row md:items-center">
+                    <li><a href="{% url 'website:program-list' %}" class="nav-link">Programs</a></li>
+                    <li><a href="{% url 'website:scholarship-list' %}" class="nav-link">Scholarships</a></li>
+                    <li><a href="{% url 'website:news-list' %}" class="nav-link">News</a></li>
+                    <li><a href="{% url 'website:announcement-list' %}" class="nav-link">Announcements</a></li>
+                    <li><a href="{% url 'website:contact' %}" class="nav-link">Contact</a></li>
+                    <li class="md:ml-2 md:border-l md:border-gray-200 md:pl-6">
+                        <a href="{% url 'portal:login' %}" class="nav-link">Student Login</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        {% endblock %}
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-brand-700 text-brand-50">
+        {% block footer %}
+        <div class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-16 sm:px-6 md:grid-cols-12 lg:px-8">
+            <div class="md:col-span-5">
+                <p class="font-display text-xl font-semibold text-white">Smart University</p>
+                <p class="mt-3 max-w-sm text-sm text-brand-100">
+                    A public university committed to teaching, research, and access — powered by the Smart University Portal.
+                </p>
+            </div>
+            <div class="md:col-span-3">
+                <p class="kicker text-brand-100">Explore</p>
+                <ul class="mt-4 space-y-2 text-sm">
+                    <li><a href="{% url 'website:program-list' %}" class="hover:text-accent-500">Programs</a></li>
+                    <li><a href="{% url 'website:scholarship-list' %}" class="hover:text-accent-500">Scholarships</a></li>
+                    <li><a href="{% url 'website:news-list' %}" class="hover:text-accent-500">News</a></li>
+                </ul>
+            </div>
+            <div class="md:col-span-4">
+                <p class="kicker text-brand-100">Contact</p>
+                <ul class="mt-4 space-y-2 text-sm">
+                    <li><a href="{% url 'website:contact' %}" class="hover:text-accent-500">Get in touch</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-white/10 px-4 py-6 text-center text-xs text-brand-100 sm:px-6 lg:px-8">
+            &copy; {% now "Y" %} Smart University. All rights reserved.
+        </div>
+        {% endblock %}
+    </footer>
+
+    {% block assistant_widget %}{% include "website/_assistant_widget.html" %}{% endblock %}
+</body>
+</html>

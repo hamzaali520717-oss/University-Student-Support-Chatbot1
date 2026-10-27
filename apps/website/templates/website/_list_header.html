@@ -1,0 +1,8 @@
+{% comment %}
+Usage: {% include "website/_list_header.html" with kicker="Admissions" title="Scholarships" count=scholarships|length noun="Scholarship" %}
+{% endcomment %}
+<p class="kicker">{{ kicker }}</p>
+<div class="mt-3 flex flex-wrap items-baseline justify-between gap-2">
+    <h1 class="font-display text-4xl font-semibold text-brand-700">{{ title }}</h1>
+    <p class="eyebrow-count">{{ count }} {{ noun }}{{ count|pluralize }}</p>
+</div>

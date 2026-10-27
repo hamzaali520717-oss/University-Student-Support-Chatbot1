@@ -1,0 +1,141 @@
+databases:
+  - name: university-portal-db
+    plan: basic-256mb
+    postgresMajorVersion: "16"
+    # Render's managed Postgres doesn't take a custom image via this file.
+    # After first provisioning, connect once and run:
+    #   CREATE EXTENSION IF NOT EXISTS vector;
+    # before running `migrate` (see LAUNCH.md).
+
+services:
+  - type: web
+    name: university-portal-web
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    preDeployCommand: python manage.py migrate
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: ASSISTANT_LLM_CLIENT_PRIVATE
+        value: ""
+      - key: DATABASE_URL
+        fromDatabase:
+          name: university-portal-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: university-portal-cache
+          type: keyvalue
+          property: connectionString
+      - key: DJANGO_ALLOWED_HOSTS
+        sync: false
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: MEDIA_BUCKET_NAME
+        sync: false
+      - key: MEDIA_ENDPOINT_URL
+        sync: false
+      - key: MEDIA_ACCESS_KEY
+        sync: false
+      - key: MEDIA_SECRET_KEY
+        sync: false
+      - key: BOOTSTRAP_ADMIN_USERNAME
+        sync: false
+      - key: BOOTSTRAP_ADMIN_EMAIL
+        sync: false
+      - key: BOOTSTRAP_ADMIN_PASSWORD
+        sync: false
+
+  - type: cron
+    name: university-portal-recover-stuck-ingestions
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    dockerCommand: python manage.py recover_stuck_ingestions --timeout-minutes 30
+    schedule: "*/15 * * * *"
+    plan: starter
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: ASSISTANT_LLM_CLIENT_PRIVATE
+        value: ""
+      - key: DATABASE_URL
+        fromDatabase:
+          name: university-portal-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: university-portal-cache
+          type: keyvalue
+          property: connectionString
+      - key: DJANGO_ALLOWED_HOSTS
+        sync: false
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: MEDIA_BUCKET_NAME
+        sync: false
+      - key: MEDIA_ENDPOINT_URL
+        sync: false
+      - key: MEDIA_ACCESS_KEY
+        sync: false
+      - key: MEDIA_SECRET_KEY
+        sync: false
+
+  - type: cron
+    name: university-portal-embedding-drift-check
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    # --tag isolates this to exactly apps.assistant.checks's registered
+    # check (see @register("assistant_embedding")) - plain `check --deploy`
+    # would also run Django's own deployment-readiness checks and fail this
+    # job for reasons unrelated to embedding drift.
+    dockerCommand: python manage.py check --tag assistant_embedding
+    schedule: "0 6 * * *"
+    plan: starter
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: ASSISTANT_LLM_CLIENT_PRIVATE
+        value: ""
+      - key: DATABASE_URL
+        fromDatabase:
+          name: university-portal-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: university-portal-cache
+          type: keyvalue
+          property: connectionString
+      - key: DJANGO_ALLOWED_HOSTS
+        sync: false
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: MEDIA_BUCKET_NAME
+        sync: false
+      - key: MEDIA_ENDPOINT_URL
+        sync: false
+      - key: MEDIA_ACCESS_KEY
+        sync: false
+      - key: MEDIA_SECRET_KEY
+        sync: false
+
+  - type: keyvalue
+    name: university-portal-cache
+    plan: starter
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []   # internal-only - no service outside this project needs it

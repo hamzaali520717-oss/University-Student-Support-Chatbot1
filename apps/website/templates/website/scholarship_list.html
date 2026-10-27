@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Scholarships — Smart University Portal{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    {% include "website/_list_header.html" with kicker="Admissions" title="Scholarships" count=scholarships|length noun="Scholarship" %}
+
+    {% if scholarships %}
+    <ul class="mt-12 grid gap-x-10 gap-y-10 lg:grid-cols-2">
+        {% for scholarship in scholarships %}
+        {% include "website/_row_static.html" with type="scholarship" item=scholarship %}
+        {% endfor %}
+    </ul>
+    {% else %}
+    {% include "website/_empty_state.html" with message="No active scholarships right now — check back soon." %}
+    {% endif %}
+</section>
+{% endblock %}

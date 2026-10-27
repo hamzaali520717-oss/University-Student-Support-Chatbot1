@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}News — Smart University Portal{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    {% include "website/_list_header.html" with kicker="Campus" title="News" count=news|length noun="Post" %}
+
+    {% if news %}
+    {% with lead=news.0 rest=news|slice:"1:" %}
+    <a href="{% url 'website:news-detail' slug=lead.slug %}" class="group mt-12 flex flex-col gap-6 border-l-4 border-brand-500 pl-6 md:flex-row md:items-center">
+        {% if lead.image %}
+        <img
+            src="{{ lead.image.url }}"
+            alt=""
+            loading="eager"
+            class="h-56 w-full shrink-0 rounded-sm object-cover md:h-48 md:w-80"
+        >
+        {% else %}
+        <div class="flex h-56 w-full shrink-0 items-center justify-center rounded-sm bg-brand-50 md:h-48 md:w-80">
+            {% include "website/_icon.html" with name="newspaper" css_class="h-10 w-10 text-brand-300" %}
+        </div>
+        {% endif %}
+        <div>
+            <span class="badge">{{ lead.publish_at|date:"M j, Y" }}</span>
+            <h2 class="mt-3 font-display text-3xl font-semibold text-gray-900 group-hover:text-brand-600">{{ lead.title }}</h2>
+            {% if lead.summary %}<p class="mt-2 max-w-2xl text-gray-600">{{ lead.summary }}</p>{% endif %}
+        </div>
+    </a>
+
+    {% if rest %}
+    <ul class="mt-12 grid gap-x-10 gap-y-8 border-t border-gray-200 pt-10 lg:grid-cols-2">
+        {% for post in rest %}
+        <li class="border-l-4 border-brand-100 pl-6">
+            <a href="{% url 'website:news-detail' slug=post.slug %}" class="group flex items-start gap-4">
+                {% if post.image %}
+                <img
+                    src="{{ post.image.url }}"
+                    alt=""
+                    loading="lazy"
+                    class="h-16 w-24 shrink-0 rounded-sm object-cover"
+                >
+                {% else %}
+                <div class="flex h-16 w-24 shrink-0 items-center justify-center rounded-sm bg-brand-50">
+                    {% include "website/_icon.html" with name="newspaper" css_class="h-5 w-5 text-brand-300" %}
+                </div>
+                {% endif %}
+                <div>
+                    <span class="badge">{{ post.publish_at|date:"M j, Y" }}</span>
+                    <h3 class="mt-2 font-display text-lg font-semibold text-gray-900 group-hover:text-brand-600">{{ post.title }}</h3>
+                    {% if post.summary %}<p class="mt-1 text-sm text-gray-600">{{ post.summary }}</p>{% endif %}
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    {% else %}
+    {% include "website/_empty_state.html" with message="No news posts yet." %}
+    {% endif %}
+</section>
+{% endblock %}

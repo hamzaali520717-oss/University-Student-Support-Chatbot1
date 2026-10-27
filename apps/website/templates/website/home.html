@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Smart University Portal{% endblock %}
+
+{% block content %}
+
+{# ---------- Hero ---------- #}
+<section class="relative overflow-hidden" data-hero-carousel>
+    {% if hero_slides %}
+        {% for slide in hero_slides %}
+        <div class="{% if not forloop.first %}hidden{% endif %} relative h-[70vh] min-h-[480px] w-full" data-hero-slide>
+            <img
+                src="{{ slide.image.url }}"
+                alt=""
+                loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                class="absolute inset-0 h-full w-full object-cover"
+            >
+            <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/10"></div>
+            <div class="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-4 pb-20 sm:px-6 lg:px-8">
+                <p class="kicker text-accent-500">Smart University</p>
+                <h1 class="mt-4 max-w-2xl font-display text-4xl font-black leading-tight text-white sm:text-5xl">
+                    {{ slide.headline }}
+                </h1>
+                {% if slide.subtext %}
+                <p class="mt-4 max-w-xl font-body text-lg text-white/90">{{ slide.subtext }}</p>
+                {% endif %}
+                {% if slide.cta_label %}
+                <div class="mt-8">
+                    <a href="{{ slide.cta_url }}" class="btn-accent">{{ slide.cta_label }}</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <button type="button" data-hero-prev aria-label="Previous slide" class="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white hover:bg-black/50">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <button type="button" data-hero-next aria-label="Next slide" class="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white hover:bg-black/50">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <div class="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+            {% for slide in hero_slides %}
+            <button
+                type="button"
+                data-hero-indicator
+                aria-current="{% if forloop.first %}true{% else %}false{% endif %}"
+                aria-label="Go to slide {{ forloop.counter }}"
+                class="h-2.5 w-2.5 rounded-full {% if forloop.first %}bg-white{% else %}bg-white/50{% endif %}"
+            ></button>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="flex h-[60vh] min-h-[420px] w-full flex-col justify-end bg-brand-700 px-4 pb-20 sm:px-6 lg:px-8">
+            <p class="kicker text-accent-500">Smart University</p>
+            <h1 class="mt-4 max-w-2xl font-display text-4xl font-black leading-tight text-white sm:text-5xl">
+                Excellence in Education Since Day One
+            </h1>
+            <p class="mt-4 max-w-xl text-lg text-white/90">
+                Rigorous programs, dedicated faculty, and a community built around discovery.
+            </p>
+            <div class="mt-8">
+                <a href="{% url 'website:program-list' %}" class="btn-accent">Explore Programs</a>
+            </div>
+        </div>
+    {% endif %}
+</section>
+
+{# ---------- Featured programs ---------- #}
+<section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+    <p class="kicker">Academics</p>
+    <h2 class="mt-3 font-display text-3xl font-semibold text-brand-700 sm:text-4xl">Featured Programs</h2>
+
+    {% if featured_programs %}
+    <div class="mt-10 grid gap-x-10 gap-y-8 md:grid-cols-12">
+        <div class="md:col-span-7">
+            {% with lead=featured_programs.0 %}
+            <a href="{% url 'website:program-detail' code=lead.code %}" class="group block border-l-4 border-brand-500 pl-6">
+                <p class="font-body text-sm uppercase tracking-widest text-brand-600">{{ lead.department.name }}</p>
+                <h3 class="mt-2 font-display text-2xl font-semibold text-gray-900 group-hover:text-brand-600">{{ lead.name }}</h3>
+                <p class="mt-2 font-display italic text-gray-600">Explore the {{ lead.code }} curriculum, requirements, and fees.</p>
+            </a>
+            {% endwith %}
+        </div>
+        <div class="md:col-span-5">
+            <ul class="space-y-5">
+                {% for program in featured_programs|slice:"1:" %}
+                <li class="border-l-4 border-brand-100 pl-6">
+                    <a href="{% url 'website:program-detail' code=program.code %}" class="group block">
+                        <p class="text-xs uppercase tracking-widest text-brand-600">{{ program.department.code }}</p>
+                        <h4 class="font-display text-lg font-medium text-gray-900 group-hover:text-brand-600">{{ program.name }}</h4>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% else %}
+    <p class="mt-8 text-gray-600">Programs will be listed here once they're added.</p>
+    {% endif %}
+
+    <div class="mt-10">
+        <a href="{% url 'website:program-list' %}" class="btn-secondary">View All Programs</a>
+    </div>
+</section>
+
+{# ---------- Stats band ---------- #}
+<section class="bg-brand-700">
+    <div class="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 py-14 sm:px-6 md:grid-cols-4 lg:px-8">
+        <div>
+            <p class="font-display text-4xl font-black text-white">{{ stats.programs }}</p>
+            <p class="mt-1 text-sm uppercase tracking-widest text-brand-100">Programs</p>
+        </div>
+        <div>
+            <p class="font-display text-4xl font-black text-white">{{ stats.departments }}</p>
+            <p class="mt-1 text-sm uppercase tracking-widest text-brand-100">Departments</p>
+        </div>
+        <div>
+            <p class="font-display text-4xl font-black text-white">{{ stats.scholarships }}</p>
+            <p class="mt-1 text-sm uppercase tracking-widest text-brand-100">Active Scholarships</p>
+        </div>
+        <div>
+            <p class="font-display text-4xl font-black text-white">{{ stats.deadlines }}</p>
+            <p class="mt-1 text-sm uppercase tracking-widest text-brand-100">Open Deadlines</p>
+        </div>
+    </div>
+</section>
+
+{# ---------- Announcements & News ---------- #}
+<section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+    <div class="grid gap-x-10 gap-y-12 md:grid-cols-12">
+        <div class="md:col-span-5">
+            <p class="kicker">Notices</p>
+            <h2 class="mt-3 font-display text-2xl font-semibold text-brand-700">Announcements</h2>
+            {% if announcements %}
+            <ul class="mt-6 space-y-5">
+                {% for item in announcements %}
+                <li class="border-b border-gray-200 pb-5">
+                    <p class="text-xs uppercase tracking-widest text-brand-600">{{ item.publish_at|date:"M j, Y" }}</p>
+                    <p class="mt-1 font-display text-lg text-gray-900">{{ item.title }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="mt-6 text-gray-600">No announcements yet.</p>
+            {% endif %}
+            <a href="{% url 'website:announcement-list' %}" class="mt-6 inline-block nav-link">All Announcements</a>
+        </div>
+        <div class="md:col-span-7">
+            <p class="kicker">Campus</p>
+            <h2 class="mt-3 font-display text-2xl font-semibold text-brand-700">Latest News</h2>
+            {% if news %}
+            <ul class="mt-6 space-y-8">
+                {% for post in news %}
+                <li>
+                    <a href="{% url 'website:news-detail' slug=post.slug %}" class="group block">
+                        <p class="text-xs uppercase tracking-widest text-brand-600">{{ post.publish_at|date:"M j, Y" }}</p>
+                        <h3 class="mt-1 font-display text-xl font-semibold text-gray-900 group-hover:text-brand-600">{{ post.title }}</h3>
+                        {% if post.summary %}<p class="mt-1 text-gray-600">{{ post.summary }}</p>{% endif %}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="mt-6 text-gray-600">No news posts yet.</p>
+            {% endif %}
+            <a href="{% url 'website:news-list' %}" class="mt-6 inline-block nav-link">All News</a>
+        </div>
+    </div>
+</section>
+
+{# ---------- CTA band ---------- #}
+<section class="bg-brand-50">
+    <div class="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
+        <h2 class="font-display text-3xl font-semibold text-brand-700 sm:text-4xl">Ready to Apply?</h2>
+        <p class="mt-3 text-gray-700">Find your program and see requirements, deadlines, and fees.</p>
+        <div class="mt-8">
+            <a href="{% url 'website:program-list' %}" class="btn-primary">Start Exploring Programs</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

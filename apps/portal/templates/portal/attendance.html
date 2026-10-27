@@ -1,0 +1,17 @@
+{% extends "portal/base.html" %}
+
+{% block title %}Attendance — Student Portal{% endblock %}
+
+{% block portal_content %}
+{% include "website/_list_header.html" with kicker="Student Portal" title="Attendance" count=attendance_records|length noun="Record" %}
+
+{% if attendance_records %}
+<ul class="mt-8 grid gap-y-2 border-t border-gray-200 pt-6">
+    {% for record in attendance_records %}
+    {% include "portal/_row.html" with type="attendance" item=record %}
+    {% endfor %}
+</ul>
+{% else %}
+{% include "website/_empty_state.html" with message="No attendance records yet." %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,7 @@
+{% comment %}
+Usage: {% include "website/_empty_state.html" with message="No scholarships are open right now." %}
+{% endcomment %}
+<div class="mt-10 flex flex-col items-center gap-3 border-l-4 border-brand-100 bg-brand-50/50 px-6 py-12 text-center">
+    {% include "website/_icon.html" with name="inbox" css_class="h-8 w-8 text-brand-500" %}
+    <p class="font-body text-gray-600">{{ message }}</p>
+</div>

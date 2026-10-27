@@ -1,0 +1,39 @@
+{% load static %}
+<div id="assistant-widget" class="fixed bottom-6 right-6 z-50">
+    <button
+        type="button"
+        id="assistant-toggle"
+        class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-white shadow-lg transition-colors duration-150 hover:bg-brand-700"
+        aria-expanded="false"
+        aria-controls="assistant-panel"
+    >
+        <span class="sr-only">Ask the Campus Assistant</span>
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.06 0-2.077-.163-3.02-.463L3 21l1.5-4.5C3.55 15.163 3 13.65 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+    </button>
+
+    <div
+        id="assistant-panel"
+        class="hidden absolute bottom-16 right-0 flex h-96 w-80 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-xl"
+    >
+        <div class="bg-brand-700 px-4 py-3">
+            <p class="font-display text-sm font-semibold text-white">Campus Assistant</p>
+            <p class="text-xs text-brand-100">Ask about programs, admissions, or fees</p>
+        </div>
+        <div id="assistant-log" class="flex-1 space-y-3 overflow-y-auto px-4 py-3 text-sm" aria-live="polite"></div>
+        <form id="assistant-form" class="flex gap-2 border-t border-gray-200 p-3">
+            <label for="assistant-question" class="sr-only">Your question</label>
+            <input
+                id="assistant-question"
+                name="question"
+                type="text"
+                required
+                maxlength="2000"
+                placeholder="Ask a question…"
+                class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            >
+            <button type="submit" class="btn-primary px-4 py-2 text-sm">Ask</button>
+        </form>
+    </div>
+</div>

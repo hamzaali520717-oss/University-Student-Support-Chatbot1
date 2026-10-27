@@ -1,0 +1,45 @@
+{% comment %}
+Shared shell for non-interactive editorial rows (no detail page to link to):
+left brand rule + icon + content. Usage:
+{% include "website/_row_static.html" with type="scholarship" item=scholarship %}
+{% include "website/_row_static.html" with type="announcement" item=item %}
+{% endcomment %}
+{% load website_extras %}
+<li class="row-static">
+    <span class="row-rule bg-brand-500" aria-hidden="true"></span>
+    <div class="flex items-start gap-3">
+        {% if type == "scholarship" %}
+        {% include "website/_icon.html" with name="currency" css_class="mt-1 h-5 w-5 shrink-0 text-brand-500" %}
+        <div>
+            <h2 class="font-display text-2xl font-semibold text-gray-900">{{ item.name }}</h2>
+            <p class="mt-2 text-gray-700">{{ item.description }}</p>
+            <div class="mt-3 flex flex-wrap items-center gap-2">
+                {% if item.amount %}
+                <span class="badge">Award: {{ item.amount|pkr }}</span>
+                {% endif %}
+                {% if item.eligibility_criteria %}
+                    {% if item.eligibility_criteria|length <= 40 %}
+                    <span class="badge-accent">{{ item.eligibility_criteria }}</span>
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% if item.eligibility_criteria and item.eligibility_criteria|length > 40 %}
+            <p class="mt-2 text-sm text-gray-600">Eligibility: {{ item.eligibility_criteria }}</p>
+            {% endif %}
+        </div>
+        {% elif type == "announcement" %}
+        {% include "website/_icon.html" with name="megaphone" css_class="mt-1 h-5 w-5 shrink-0 text-brand-500" %}
+        <div>
+            <span class="badge">{% include "website/_icon.html" with name="calendar" css_class="mr-1.5 h-3.5 w-3.5" %}{{ item.publish_at|date:"M j, Y" }}</span>
+            {% comment %}
+            h3, not h2: this partial is used both directly under a page's own
+            h1 (website/announcement_list.html) and nested under an h2
+            section header (apps/portal's dashboard) - h3 nests correctly in
+            the latter and is only a minor, common level-skip in the former.
+            {% endcomment %}
+            <h3 class="mt-2 font-display text-xl text-gray-900">{{ item.title }}</h3>
+            <p class="mt-2 text-gray-700">{{ item.body }}</p>
+        </div>
+        {% endif %}
+    </div>
+</li>

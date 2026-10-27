@@ -1,0 +1,17 @@
+{% extends "portal/base.html" %}
+
+{% block title %}Fees — Student Portal{% endblock %}
+
+{% block portal_content %}
+{% include "website/_list_header.html" with kicker="Student Portal" title="Fees" count=fee_statuses|length noun="Semester" %}
+
+{% if fee_statuses %}
+<ul class="mt-8 grid gap-y-2 border-t border-gray-200 pt-6">
+    {% for status in fee_statuses %}
+    {% include "portal/_row.html" with type="fee" item=status %}
+    {% endfor %}
+</ul>
+{% else %}
+{% include "website/_empty_state.html" with message="No fee records yet." %}
+{% endif %}
+{% endblock %}

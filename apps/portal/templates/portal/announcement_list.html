@@ -1,0 +1,17 @@
+{% extends "portal/base.html" %}
+
+{% block title %}Announcements — Student Portal{% endblock %}
+
+{% block portal_content %}
+{% include "website/_list_header.html" with kicker="Notices" title="Announcements" count=announcements|length noun="Announcement" %}
+
+{% if announcements %}
+<ul class="mt-8 grid gap-x-10 gap-y-8 lg:grid-cols-2">
+    {% for item in announcements %}
+    {% include "website/_row_static.html" with type="announcement" item=item %}
+    {% endfor %}
+</ul>
+{% else %}
+{% include "website/_empty_state.html" with message="No announcements right now." %}
+{% endif %}
+{% endblock %}

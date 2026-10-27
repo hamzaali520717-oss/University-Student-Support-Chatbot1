@@ -1,0 +1,27 @@
+{% extends "portal/base.html" %}
+
+{% block title %}Semester Plan — Student Portal{% endblock %}
+
+{% block portal_content %}
+{% include "website/_list_header.html" with kicker="Student Portal" title="Semester Plan" count=plans|length noun="Semester" %}
+
+{% if plans %}
+<div class="mt-8 grid gap-x-10 gap-y-10 lg:grid-cols-2">
+    {% for plan in plans %}
+    <div class="border-l-4 border-brand-100 pl-6">
+        <p class="kicker">Semester {{ plan.semester }}</p>
+        <ul class="mt-4 space-y-3">
+            {% for subject in plan.subjects.all %}
+            <li class="flex items-start gap-3">
+                {% include "website/_icon.html" with name="academic-cap" css_class="mt-1 h-5 w-5 shrink-0 text-brand-500" %}
+                <span class="text-gray-900">{{ subject.course.code }} {{ subject.course.title }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+{% include "website/_empty_state.html" with message="You don't have a semester plan yet." %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,67 @@
+{% comment %}
+Shared shell for portal editorial rows - mirrors website/_row_static.html's
+type=/item= dispatch pattern: left brand/accent rule + icon + title/subtitle
++ optional status badge or trailing action.
+Usage:
+{% include "portal/_row.html" with type="enrollment" item=enrollment %}
+{% include "portal/_row.html" with type="available_subject" item=subject %}
+{% include "portal/_row.html" with type="attendance" item=record %}
+{% include "portal/_row.html" with type="fee" item=status %}
+{% endcomment %}
+{% load website_extras %}
+<li class="row-static">
+    {% if type == "attendance" %}
+    <span class="row-rule {% if item.status == 'present' %}bg-brand-500{% else %}bg-accent-500{% endif %}" aria-hidden="true"></span>
+    {% elif type == "fee" %}
+    <span class="row-rule {% if item.status == 'paid' %}bg-brand-500{% else %}bg-accent-500{% endif %}" aria-hidden="true"></span>
+    {% else %}
+    <span class="row-rule bg-brand-500" aria-hidden="true"></span>
+    {% endif %}
+
+    {% if type == "enrollment" %}
+    <div class="flex items-start gap-3">
+        {% include "website/_icon.html" with name="academic-cap" css_class="mt-1 h-5 w-5 shrink-0 text-brand-500" %}
+        <div>
+            <h2 class="font-display text-xl text-gray-900">{{ item.subject.course.code }} {{ item.subject.course.title }}</h2>
+            <p class="mt-1 text-sm text-gray-600">{{ item.subject.program.code }} &middot; Semester {{ item.subject.semester }} &middot; {{ item.subject.credit_hours }} credit hours</p>
+        </div>
+    </div>
+
+    {% elif type == "available_subject" %}
+    <div class="flex items-center justify-between gap-3">
+        <div>
+            <h3 class="font-display text-lg text-gray-900">{{ item.course.code }} {{ item.course.title }}</h3>
+            <p class="mt-1 text-sm text-gray-600">Semester {{ item.semester }} &middot; {{ item.credit_hours }} credit hours</p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="subject" value="{{ item.id }}">
+            <button type="submit" class="btn-secondary px-4 py-2 text-sm" aria-label="Enroll in {{ item.course.code }} {{ item.course.title }}">Enroll</button>
+        </form>
+    </div>
+
+    {% elif type == "attendance" %}
+    <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+            {% include "website/_icon.html" with name="clock" css_class="h-5 w-5 shrink-0 text-brand-500" %}
+            <div>
+                <p class="font-display text-lg text-gray-900">{{ item.enrollment.subject.course.code }} {{ item.enrollment.subject.course.title }}</p>
+                <p class="mt-1 text-sm text-gray-600">{{ item.date|date:"M j, Y" }}</p>
+            </div>
+        </div>
+        <span class="{% if item.status == 'present' %}badge{% else %}badge-accent{% endif %}">{{ item.get_status_display }}</span>
+    </div>
+
+    {% elif type == "fee" %}
+    <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+            {% include "website/_icon.html" with name="currency" css_class="h-5 w-5 shrink-0 text-brand-500" %}
+            <div>
+                <p class="font-display text-lg text-gray-900">Semester {{ item.semester }}</p>
+                <p class="mt-1 text-sm text-gray-600">{{ item.amount_paid|pkr }} of {{ item.amount_due|pkr }} paid</p>
+            </div>
+        </div>
+        <span class="{% if item.status == 'paid' %}badge{% else %}badge-accent{% endif %}">{{ item.get_status_display }}</span>
+    </div>
+    {% endif %}
+</li>

@@ -1,0 +1,84 @@
+{% extends "admin/base.html" %}
+
+{% load i18n %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">
+            {{ site_header|default:_('Django administration') }}
+        </a>
+    </h1>
+{% endblock %}
+
+{% block content %}
+    <div class="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {% for card in stat_cards %}
+            <div class="rounded-md border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                <div class="text-3xl font-semibold text-primary-600 dark:text-primary-500">{{ card.value }}</div>
+                <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ card.label }}</div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="flex flex-col gap-4 lg:flex-row">
+        <div class="rounded-md border border-gray-200 bg-white p-4 lg:w-1/3 dark:border-gray-800 dark:bg-gray-900">
+            <h2 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{% translate "Documents needing attention" %}</h2>
+            {% if documents_needing_attention %}
+                <ul>
+                    {% for document in documents_needing_attention %}
+                        <li class="mb-2 border-b border-gray-100 pb-2 last:mb-0 last:border-0 last:pb-0 dark:border-gray-800">
+                            <a href="{% url 'admin:assistant_document_change' document.pk %}" class="text-gray-900 dark:text-gray-100">{{ document.title }}</a>
+                            <span class="ml-1 text-sm text-gray-500 dark:text-gray-400">({{ document.get_status_display }})</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-sm text-gray-500 dark:text-gray-400">{% translate "Nothing needs attention." %}</p>
+            {% endif %}
+        </div>
+
+        <div class="rounded-md border border-gray-200 bg-white p-4 lg:w-1/3 dark:border-gray-800 dark:bg-gray-900">
+            <h2 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{% translate "Recent announcements" %}</h2>
+            {% if recent_announcements %}
+                <ul>
+                    {% for announcement in recent_announcements %}
+                        <li class="mb-2 border-b border-gray-100 pb-2 last:mb-0 last:border-0 last:pb-0 dark:border-gray-800">
+                            <a href="{% url 'admin:content_announcement_change' announcement.pk %}" class="text-gray-900 dark:text-gray-100">{{ announcement.title }}</a>
+                            <span class="ml-1 text-sm text-gray-500 dark:text-gray-400">({{ announcement.publish_at|date:"M j, Y" }})</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-sm text-gray-500 dark:text-gray-400">{% translate "No announcements yet." %}</p>
+            {% endif %}
+        </div>
+
+        <div class="rounded-md border border-gray-200 bg-white p-4 lg:w-1/3 dark:border-gray-800 dark:bg-gray-900">
+            <h2 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{% translate "Recent contact messages" %}</h2>
+            {% if recent_contact_messages %}
+                <ul>
+                    {% for message in recent_contact_messages %}
+                        <li class="mb-2 border-b border-gray-100 pb-2 last:mb-0 last:border-0 last:pb-0 dark:border-gray-800">
+                            <a href="{% url 'admin:content_contactmessage_change' message.pk %}" class="text-gray-900 dark:text-gray-100">{{ message.subject }}</a>
+                            <span class="ml-1 text-sm text-gray-500 dark:text-gray-400">{{ message.name }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-sm text-gray-500 dark:text-gray-400">{% translate "No contact messages yet." %}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-8 flex flex-col lg:flex-row lg:gap-8">
+        <div class="flex-grow">
+            {% include "unfold/helpers/app_list_default.html" %}
+        </div>
+
+        {% include "unfold/helpers/history.html" %}
+    </div>
+{% endblock %}

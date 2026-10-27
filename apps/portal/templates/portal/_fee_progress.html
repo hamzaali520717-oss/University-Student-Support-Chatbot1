@@ -1,0 +1,35 @@
+{% comment %}
+Fee-paid progress meter for the student's most recent semester (see
+apps/portal/views.py::_fee_progress_context). brand-600 = paid in full,
+accent-600 = partial or unpaid (attention).
+Usage: {% include "portal/_fee_progress.html" %} with `fee` in context.
+{% endcomment %}
+{% load website_extras %}
+<div class="border-l-4 border-brand-100 pl-6">
+    <p class="kicker">Overview</p>
+    <h2 class="mt-3 font-display text-xl font-semibold text-gray-900">Fees</h2>
+    {% if fee.has_data %}
+    <p class="mt-1 text-sm font-semibold {% if fee.status == 'good' %}text-brand-600{% else %}text-accent-600{% endif %}">
+        {{ fee.status_label }}
+    </p>
+    <p class="mt-3 text-sm text-gray-600">
+        Semester {{ fee.fee_status.semester }} &mdash; {{ fee.fee_status.amount_paid|pkr }} of {{ fee.fee_status.amount_due|pkr }} paid
+    </p>
+    <div
+        class="mt-3 h-3 w-full overflow-hidden rounded-full bg-gray-200"
+        role="progressbar"
+        aria-valuenow="{{ fee.percent_paid }}"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-label="Fee payment progress: {{ fee.percent_paid }}% paid"
+    >
+        <div
+            class="h-full rounded-full {% if fee.status == 'good' %}bg-brand-600{% else %}bg-accent-600{% endif %}"
+            style="width: {{ fee.percent_paid }}%"
+        ></div>
+    </div>
+    <a href="{% url 'portal:fees' %}" class="nav-link mt-4 inline-block">View fee history</a>
+    {% else %}
+    <p class="mt-2 text-sm text-gray-600">No fee records yet.</p>
+    {% endif %}
+</div>
