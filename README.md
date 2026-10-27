@@ -1,4 +1,4 @@
-# Smart University Portal
+# University Student Support Chatbot
 
 A university platform built around one shared PostgreSQL database: a public
 website, a student portal, and an admin dashboard, plus an AI Campus
